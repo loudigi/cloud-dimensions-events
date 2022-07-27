@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_widget">
+    <sp_widget action="INSERT_OR_UPDATE">
+        <category>custom</category>
+        <client_script><![CDATA[api.controller=function(spUserAvatar, spEventPubSub, $scope) {
+  /* widget controller */
+  var c = this;
+	
+  /* Step 3. Accept user input */
+
+	c.saveTags = function(event) {
+		c.server.get({
+			tags:event.tags,
+			sys_id: event.sys_id
+		}).then(function(rsp){
+			c.data.msg=rsp.data.msg;
+			c.data.state=rsp.data.state;
+		})
+	}	
+
+	//use underscore to loop over event and add the avatar object to each event
+	_.each(c.data.events, function(ev) {
+
+		/* call the getAvatar method on the UserAvatar service and pass it the sys_id of the Event's presenter */
+		var avatar = spUserAvatar.getAvatar(ev.presenter.value).then(function(rsp){
+
+			//add a new avatar property to current event
+			ev.avatar=rsp;
+		});
+	});	
+	
+	/* Subscribe to the PubSub service. A callback function passes the $event and data objects as parameters, executes when the event is heard */
+spEventPubSub.subscribe($scope, function($event, data) {
+
+	/* Find and return the event in the c.data.events array whose sys_id matches the sys_id in the 'args' parameter */
+	var selectedEvent = _.find(c.data.events, function(input){
+		return input.sys_id == data.sys_id; 
+	}) 
+
+	selectedEvent.active = true;
+});	
+};	]]></client_script>
+        <controller_as>c</controller_as>
+        <css>.margin-bottom-10 {
+  margin-bottom: 10px;
+}	</css>
+        <data_table>sp_instance</data_table>
+        <demo_data/>
+        <description/>
+        <docs/>
+        <field_list/>
+        <has_preview>true</has_preview>
+        <id>event_information</id>
+        <internal>false</internal>
+        <link><![CDATA[function link(scope, element, attrs, controller) {  }]]></link>
+        <name>Event Information</name>
+        <option_schema/>
+        <public>false</public>
+        <roles/>
+        <script><![CDATA[(function() {
+
+	/* Step 1. Load initial data from the server */
+			/* populate the 'data' object */
+			/* e.g., data.table = $sp.getValue('table'); */
+
+	if(!input) {
+		var eventsTable = 'x_snc_cloudevents_events';
+		var fields = 'sys_id,name,description,start_date,end_date,certification,certification_name,location,presenter';
+		data.events = [ ];
+
+		var gr = new GlideRecordSecure(eventsTable);
+		gr.addActiveQuery();
+		gr.query();
+		
+		while(gr.next()){
+			var o = $sp.getFieldsObject(gr,fields);
+			o.sys_id = gr.getUniqueValue();
+			o.tags = gr.tags.toString().split(',');
+			o._fields = fields.split(","); //lists the fields in the order declared in the variable
+			data.events.push(o);
+		}	
+	}
+
+
+
+	/* Step 4. Process user input */
+	
+	if(input) {
+		var updateTags = new GlideRecordSecure('x_snc_cloudevents_events');
+		updateTags.get(input.sys_id);
+		updateTags.tags=input.tags.join(',');
+
+		var result=updateTags.update();
+
+		if(result){
+			data.msg='Tags saved';
+			data.state='success';
+		}	
+	}
+
+})();	]]></script>
+        <servicenow>false</servicenow>
+        <sys_class_name>sp_widget</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-08-11 19:00:55</sys_created_on>
+        <sys_id>65cdab5fd5b130107f44d7ddd8f25f80</sys_id>
+        <sys_mod_count>12</sys_mod_count>
+        <sys_name>Event Information</sys_name>
+        <sys_package display_value="Cloud Dimensions Events" source="x_snc_cloudevents">77108b70610813007f44e59882b97a67</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Cloud Dimensions Events">77108b70610813007f44e59882b97a67</sys_scope>
+        <sys_update_name>sp_widget_65cdab5fd5b130107f44d7ddd8f25f80</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-08-12 01:37:30</sys_updated_on>
+        <template><![CDATA[<form>
+ <!-- Step 5. Display customized content based on user input -->
+  <div class="alert alert-{{::c.data.state}}"
+       ng-if="c.data.msg">{{::c.data.msg}}
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+  </div>	
+  
+  <!-- Step 2. Display initial data from the server -->
+
+  <uib-tabset class="cloud-widgets">
+    <legend>Event Details</legend>
+
+    <!-- Display each Event on a separate tab -->
+    <uib-tab heading="{{event.name.display_value}}"
+             ng-repeat="event in c.data.events"
+             active="event.active"
+             ng-click="event.active=true">
+      <div class="margin-bottom-10"></div>
+
+      <!-- Bootstrap's Description List displays record details on a tab -->
+      <dl ng-repeat="field in event._fields" 
+          ng-if="event[field].value">
+        <dt>{{event[field].label}}</dt>
+        <dd>{{event[field].display_value}}</dd>
+      </dl>
+      <!-- Presenter's Avatar -->
+      <div class="avatar-extra-large avatar-container margin-bottom-10"
+           style="cursor:default;"
+           uib-tooltip="{{event.presenter.display_value}}">
+        <div class="avatar soloAvatar bottom">
+          <div class="sub-avatar mia" ng-style="event.avatar">
+            <i class="fa fa-user"></i>
+          </div>
+        </div>
+      </div>	
+      <tags-input class="margin-bottom-10"
+                  placeholder="{{c.placeholderText}}"
+                  use-strings="true"
+                  ng-model="event.tags">
+      </tags-input>
+      <input type="button" value="Save" class="btn btn-primary"
+             ng-click="c.saveTags(event)">	
+    </uib-tab>
+  </uib-tabset>	
+
+ 
+
+
+
+</form>
+]]></template>
+    </sp_widget>
+</record_update>

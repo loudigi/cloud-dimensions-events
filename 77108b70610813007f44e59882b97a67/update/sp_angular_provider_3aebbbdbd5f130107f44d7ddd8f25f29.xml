@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_angular_provider">
+    <sp_angular_provider action="INSERT_OR_UPDATE">
+        <name>spTimeAgo</name>
+        <script><![CDATA[function(){
+	function timeSince(date) {
+
+		date=new Date(date);
+		var seconds = Math.floor((new Date() - date) / 1000);
+
+		var interval = Math.floor(seconds / 31536000);
+
+		if (interval > 1) {
+			return interval + " years";
+		}
+		interval = Math.floor(seconds / 2592000);
+		if (interval > 1) {
+			return interval + " months";
+		}
+		interval = Math.floor(seconds / 86400);
+		if (interval > 1) {
+			return interval + " days";
+		}
+		interval = Math.floor(seconds / 3600);
+		if (interval > 1) {
+			return interval + " hours";
+		}
+		interval = Math.floor(seconds / 60);
+		if (interval > 1) {
+			return interval + " minutes";
+		}
+		return Math.floor(seconds) + " seconds";
+	}	
+	return {
+		restrict: 'E', //Element
+		template: '<span uib-tooltip="{{date}}" tooltip-class="customClass">{{ago}}</span> ago',  //Output of directive
+
+		scope: {  //create an isolated scope
+			//scope.date bound to the property passed in through the element
+			date:'='
+		},
+
+		//Client controller	
+		link:function(scope){
+			scope.ago = timeSince(scope.date);
+		}
+	};
+}]]></script>
+        <sys_class_name>sp_angular_provider</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-08-11 20:04:05</sys_created_on>
+        <sys_id>3aebbbdbd5f130107f44d7ddd8f25f29</sys_id>
+        <sys_mod_count>3</sys_mod_count>
+        <sys_name>spTimeAgo</sys_name>
+        <sys_package display_value="Cloud Dimensions Events" source="x_snc_cloudevents">77108b70610813007f44e59882b97a67</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Cloud Dimensions Events">77108b70610813007f44e59882b97a67</sys_scope>
+        <sys_update_name>sp_angular_provider_3aebbbdbd5f130107f44d7ddd8f25f29</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-08-11 20:18:00</sys_updated_on>
+        <type>directive</type>
+    </sp_angular_provider>
+</record_update>

@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?><record_update table="sp_instance_table">
+    <sp_instance_table action="INSERT_OR_UPDATE">
+        <active>true</active>
+        <class_name/>
+        <color>default</color>
+        <css/>
+        <display_field/>
+        <field_list/>
+        <filter/>
+        <glyph/>
+        <id/>
+        <maximum_entries>5</maximum_entries>
+        <order>1</order>
+        <order_by/>
+        <order_direction>asc</order_direction>
+        <roles/>
+        <short_description/>
+        <size>md</size>
+        <sp_column display_value="1">64314b9fd53130107f44d7ddd8f25f71</sp_column>
+        <sp_page/>
+        <sp_widget display_value="Table Summary">b0bf2e93d53130107f44d7ddd8f25ff5</sp_widget>
+        <sys_class_name>sp_instance_table</sys_class_name>
+        <sys_created_by>admin</sys_created_by>
+        <sys_created_on>2021-08-11 16:26:16</sys_created_on>
+        <sys_id>d86a475bd57130107f44d7ddd8f25f71</sys_id>
+        <sys_mod_count>1</sys_mod_count>
+        <sys_name>Upcoming Events</sys_name>
+        <sys_package display_value="Cloud Dimensions Events" source="x_snc_cloudevents">77108b70610813007f44e59882b97a67</sys_package>
+        <sys_policy/>
+        <sys_scope display_value="Cloud Dimensions Events">77108b70610813007f44e59882b97a67</sys_scope>
+        <sys_update_name>sp_instance_table_d86a475bd57130107f44d7ddd8f25f71</sys_update_name>
+        <sys_updated_by>admin</sys_updated_by>
+        <sys_updated_on>2021-08-11 16:28:15</sys_updated_on>
+        <table>x_snc_cloudevents_registrations</table>
+        <title>Upcoming Events</title>
+        <url/>
+        <widget_parameters><![CDATA[{
+	"aggregate_field": {
+		"value": "event",
+		"displayValue": "event"
+	},
+	"title": {
+		"value": "Upcoming Events",
+		"displayValue": "Upcoming Events"
+	},
+	"display_fields": {
+		"value": "first_name,last_name,company,email,sys_updated_on",
+		"displayValue": "first_name,last_name,company,email,sys_updated_on"
+	},
+	"enable_arrow_key_selection": {
+		"value": "true",
+		"displayValue": "true"
+	}
+}]]></widget_parameters>
+    </sp_instance_table>
+    <sys_translated_text action="delete_multiple" query="documentkey=d86a475bd57130107f44d7ddd8f25f71"/>
+</record_update>
